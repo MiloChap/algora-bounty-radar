@@ -1,0 +1,7 @@
+# Fichiers générés / locaux
+radar_state.json
+__pycache__/
+*.pyc
+
+# Outils
+.claude/
