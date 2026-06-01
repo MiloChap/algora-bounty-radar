@@ -124,14 +124,25 @@ def save_seen(seen: set[str]):
     STATE_FILE.write_text(json.dumps(sorted(seen)), encoding="utf-8")
 
 
-def notify(title: str, message: str):
-    """Windows toast (via BurntToast if installed); silently skipped otherwise."""
+def notify(title: str, message: str, url: str = ""):
+    """Windows toast (via BurntToast if installed); silently skipped otherwise.
+
+    If `url` is given, clicking the toast opens it in the default browser.
+    """
+    def esc(s: str) -> str:                       # escape ' for PowerShell single-quoted strings
+        return s.replace("'", "''")
+    # A protocol button is encoded in the toast itself, so it still opens the URL
+    # after this fire-and-forget process exits (unlike a scriptblock action).
+    if url:
+        button = f"$b = New-BTButton -Content 'Open issue' -Arguments '{esc(url)}'; "
+        notif = f"New-BurntToastNotification -Text '{esc(title)}', '{esc(message)}' -Button $b"
+    else:
+        button = ""
+        notif = f"New-BurntToastNotification -Text '{esc(title)}', '{esc(message)}'"
+    command = f"if (Get-Module -ListAvailable -Name BurntToast) {{ {button}{notif} }}"
     try:
-        subprocess.run(
-            ["powershell", "-NoProfile", "-Command",
-             "if (Get-Module -ListAvailable -Name BurntToast) {"
-             f"  New-BurntToastNotification -Text '{title}', '{message}' }}"],
-            capture_output=True, timeout=15)
+        subprocess.run(["powershell", "-NoProfile", "-Command", command],
+                       capture_output=True, timeout=15)
     except Exception:
         pass
 
@@ -205,7 +216,8 @@ def main():
                 print(f"          {h['url']}")
             top = hits[0]
             notify(f"Free bounty {top['amount']}",
-                   f"{top['repo']}#{top['number']} - {top['title'][:60]}")
+                   f"{top['repo']}#{top['number']} - {top['title'][:60]}",
+                   top["url"])
         else:
             print(f"[{stamp}] Nothing new.")
 

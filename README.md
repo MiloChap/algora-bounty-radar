@@ -1,6 +1,6 @@
 # Algora Bounty Radar
 
-> Get notified the moment a fresh, unclaimed [Algora](https://algora.io) bounty appears — so you can be *first*, not 21st.
+> Get notified the moment a fresh, unclaimed [Algora](https://algora.io) bounty appears, so you can be *first* instead of 21st.
 
 ## Why
 
@@ -15,23 +15,23 @@ real repository.**
 
 ## How it works
 
-The Algora bot (`algora-pbc`) comments on every issue that gets a bounty. So a
-single GitHub search —
+The Algora bot (`algora-pbc`) comments on every issue that gets a bounty, so this
+one GitHub search is effectively the global Algora bounty board:
 
 ```
 commenter:app/algora-pbc is:issue is:open   (sorted by newest)
 ```
 
-— is effectively the global Algora bounty board. For each fresh issue the radar
-discards anything that is already assigned, too old, on a low-star repo, or
-already has an `/attempt`. Whatever survives is a genuinely open bounty. Seen
-issues are remembered in `radar_state.json`, so you're alerted **only on new ones**.
+For each fresh issue, the radar throws away anything that's already assigned, too
+old, on a low-star repo, or already has an `/attempt`. Whatever's left is a
+genuinely open bounty. It remembers what it has seen in `radar_state.json`, so you
+only get alerted on **new** ones.
 
 ## Requirements
 
 - Windows + PowerShell
 - Python 3.9+
-- A GitHub token (classic, **no scopes** needed) — lifts the API limit from 60 to 5000 req/h
+- A GitHub token (classic, **no scopes** needed). This lifts the API limit from 60 to 5000 requests/hour.
 
 ## Quick start
 
@@ -54,7 +54,7 @@ Prefer to do it by hand? Three steps.
 [Environment]::SetEnvironmentVariable("GITHUB_TOKEN", "ghp_xxx", "User")
 ```
 
-**2. Find your real Python** — the Microsoft Store alias misbehaves in scheduled tasks:
+**2. Find your real Python** (the Microsoft Store alias misbehaves in scheduled tasks):
 
 ```powershell
 python -c "import sys; print(sys.executable)"
@@ -107,7 +107,7 @@ Edit the constants at the top of [`algora_radar.py`](algora_radar.py):
 
 Alerts are shown as Windows toasts via the [BurntToast](https://github.com/Windos/BurntToast) module.
 The installer sets it up for you. **It is required for the scheduled task**, which
-runs windowless — without it, a found bounty produces no visible alert. To install
+runs windowless, so without it a found bounty produces no visible alert. To install
 it by hand:
 
 ```powershell

@@ -45,10 +45,10 @@ if (-not $python) {
 # Prefer pythonw.exe (no flashing console window every run)
 $pythonw = Join-Path (Split-Path $python) "pythonw.exe"
 $runExe  = if (Test-Path $pythonw) { $pythonw } else { $python }
-Write-Host "[1/3] Python found: $python" -ForegroundColor Green
+Write-Host "[1/4] Python found: $python" -ForegroundColor Green
 
 # 2. GitHub token ----------------------------------------------------------------
-Write-Host "`n[2/3] GitHub token"
+Write-Host "`n[2/4] GitHub token"
 Write-Host "      Create one at https://github.com/settings/tokens (classic, no scopes needed)."
 $existing = [Environment]::GetEnvironmentVariable("GITHUB_TOKEN", "User")
 if ($existing) {
