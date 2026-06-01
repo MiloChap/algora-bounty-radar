@@ -77,8 +77,23 @@ if ($token) {
     Write-Host "      ! No token set - the radar will run but is limited to 60 req/h." -ForegroundColor Yellow
 }
 
-# 3. Register the scheduled task -------------------------------------------------
-Write-Host "`n[3/3] Scheduled task '$TaskName' (every 15 minutes)"
+# 3. Desktop notifications -------------------------------------------------------
+# Required for the scheduled task to alert visibly: it runs windowless (pythonw),
+# so console output is invisible and a toast is the only way you'll see a hit.
+Write-Host "`n[3/4] Desktop notifications (BurntToast)"
+if (Get-Module -ListAvailable -Name BurntToast) {
+    Write-Host "      Already installed." -ForegroundColor Green
+} else {
+    try {
+        Install-Module BurntToast -Scope CurrentUser -Force -AllowClobber
+        Write-Host "      Installed." -ForegroundColor Green
+    } catch {
+        Write-Host "      ! Auto-install failed. Run manually: Install-Module BurntToast -Scope CurrentUser" -ForegroundColor Yellow
+    }
+}
+
+# 4. Register the scheduled task -------------------------------------------------
+Write-Host "`n[4/4] Scheduled task '$TaskName' (every 15 minutes)"
 try { Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction Stop } catch {}
 
 $action    = New-ScheduledTaskAction -Execute $runExe -Argument "`"$Script`" --once" -WorkingDirectory $Root
@@ -92,6 +107,5 @@ Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger `
 Write-Host "      Task registered." -ForegroundColor Green
 
 Write-Host "`nDone. The radar will run every 15 minutes." -ForegroundColor Cyan
-Write-Host "  - Run now:        python `"$Script`" --once"
-Write-Host "  - Desktop toasts: Install-Module BurntToast -Scope CurrentUser"
-Write-Host "  - Manage task:    taskschd.msc  (or .\uninstall.ps1 to remove)`n"
+Write-Host "  - Run now:     python `"$Script`" --once"
+Write-Host "  - Manage task: taskschd.msc  (or .\uninstall.ps1 to remove)`n"

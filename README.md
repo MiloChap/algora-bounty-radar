@@ -66,8 +66,10 @@ python -c "import sys; print(sys.executable)"
 python algora_radar.py            # loop, checks every 15 minutes
 ```
 
-**3b. Or register a Scheduled Task** (replace `<python>` with the path from step 2,
-and `<dir>` with this folder; use `pythonw.exe` to avoid a console window):
+**3b. Or register a Scheduled Task.** First install BurntToast (see
+[Desktop notifications](#desktop-notifications)) so the windowless task can alert you,
+then replace `<python>` with the path from step 2 and `<dir>` with this folder
+(use `pythonw.exe` to avoid a console window):
 
 ```powershell
 $action  = New-ScheduledTaskAction -Execute "<python>" -Argument "algora_radar.py --once" -WorkingDirectory "<dir>"
@@ -101,13 +103,18 @@ Edit the constants at the top of [`algora_radar.py`](algora_radar.py):
 | `CHECK_EVERY_MIN` | loop interval | `15` |
 | `BLOCKLIST` | repos to always skip | — |
 
-## Desktop notifications (optional)
+## Desktop notifications
+
+Alerts are shown as Windows toasts via the [BurntToast](https://github.com/Windos/BurntToast) module.
+The installer sets it up for you. **It is required for the scheduled task**, which
+runs windowless — without it, a found bounty produces no visible alert. To install
+it by hand:
 
 ```powershell
 Install-Module BurntToast -Scope CurrentUser
 ```
 
-Without it, matches are simply printed to the console.
+(When running the radar directly in a terminal, matches are also printed to the console.)
 
 ## Uninstall
 
